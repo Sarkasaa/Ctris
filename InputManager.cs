@@ -20,13 +20,13 @@ namespace Ctris {
                 lastPressedKeys.Add(key);
         }
 
-        private static void OnKeyPressed(Keys key, Piece piece) {
+        public static void OnKeyPressed(Keys key, Piece piece) {
             if (key == Keys.Left)
-                piece.Move(new Point(-1, 0));
+                piece.Move(new Point(-1, 0), -1);
             if(key == Keys.Right)
-                piece.Move(new Point(1,0));
+                piece.Move(new Point(1,0), 1);
             if(key == Keys.Down)
-                piece.Move(new Point(0,1));
+                piece.Move(new Point(0,1), 0);
         }
 
     }

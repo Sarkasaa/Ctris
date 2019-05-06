@@ -6,7 +6,7 @@ using MonoGame.Extended;
 namespace Ctris {
     public class Piece {
 
-
+        private int counter;
         private int[,] tiles;
         private Color color;
         private int pieceRot;
@@ -98,24 +98,31 @@ namespace Ctris {
             return 0;
         }
 
-        public bool CanMove() {
-            if (this.CurrPos.X > 10) {
-                var mostRightX = this.CurrPos.X + this.PieceBias();
-                if (mostRightX <= 2)
-                    return true;
-            } else if (this.CurrPos.X <= 10) {
-                var mostLeftX = this.CurrPos.X 
-            }
+        private bool CanMove(int direction) {
+            var halfWidth = (int) Math.Ceiling(this.Width / 2F);
+            var pieceBias = this.PieceBias();
+
+            if (pieceBias != 0)
+                return this.CurrPos.X + pieceBias * halfWidth < Board.Width;
+            if (this.CurrPos.X + halfWidth >= Board.Width && direction == 1)
+                return false;
+            if (this.CurrPos.X - halfWidth < 1 && direction == -1)
+                return false;
+            return true;
         }
-        
-        public void Move(Point offset) {
-            var halfWidth = (int) Math.Ceiling(this.tiles.GetLength(1) / 2F);
-            
+
+
+        public void Move(Point offset, int direction) {
+            if (!this.CanMove(direction)) {
+                counter++;
+                Console.WriteLine("move prevented " + counter);
+                return;
+            }
             this.CurrPos += offset;
+            counter = 0;
             Console.WriteLine(this.CurrPos);
         }
-        
-        
+
 
         public void Draw(SpriteBatch batch) {
             var renderPos = (this.CurrPos - new Point(this.Width / 2, this.Height / 2)).ToVector2();

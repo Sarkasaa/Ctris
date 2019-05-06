@@ -7,7 +7,7 @@ namespace Ctris {
     public class GameImpl : Game {
 
         private SpriteBatch batch;
-        private Board Board;
+        private Board board;
 
 
         public GameImpl() {
@@ -19,16 +19,16 @@ namespace Ctris {
 
         protected override void LoadContent() {
             batch = new SpriteBatch(this.GraphicsDevice);
-            this.Board = new Board();
+            this.board = new Board();
         }
 
         protected override void Draw(GameTime gameTime) {
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
-            this.Board.Draw(gameTime, batch, this.GraphicsDevice.Viewport);
+            this.board.Draw(gameTime, batch, this.GraphicsDevice.Viewport);
         }
 
         protected override void Update(GameTime gameTime) {
-            InputManager.Update(this.Board.currPiece);
+            InputManager.Update(this.board.currPiece);
         }
 
 
