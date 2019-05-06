@@ -6,12 +6,12 @@ using MonoGame.Extended;
 namespace Ctris {
     public class Piece {
 
-        private int counter;
+        //private int counter;
         private int[,] tiles;
         private Color color;
-        private int pieceRot;
         private PieceType pieceType;
 
+        public int PieceRot = 0;
         public Point CurrPos;
         public int Width => this.tiles.GetLength(1);
         public int Height => this.tiles.GetLength(0);
@@ -77,56 +77,60 @@ namespace Ctris {
             }
         }
 
-        public int[,] RotatePiece(int[,] tiles) {
-            var pieceRot = this.pieceRot;
-            if (this.pieceRot == 0) {
-                return tiles;
-            }
-            var result = new int[Width, Width];
-            for (var rot = 0; rot < pieceRot; rot++) {
-                for (var x = 0; x < Width; x++) {
-                    for (var y = 0; y < Width; y++) {
-                        var newX = y;
-                        var newY = Width - (x + 1);
-                        result[newX, newY] = tiles[y, x];
-                    }
+        public void RotatePieceCCW() {
+            var result = new int[this.Width, this.Width];
+            for (var x = 0; x < this.Width; x++) {
+                for (var y = 0; y < this.Width; y++) {
+                    var newX = y;
+                    var newY = this.Width - (x + 1);
+                    result[newY, newX] = this.tiles[y, x];
                 }
             }
-            return result;
+
+            this.tiles = result;
         }
 
-
-        public int PieceBias() {
-            if (this.Width == 3) {
-                if (this.pieceRot == 0 || this.pieceRot == 2) {
-                    return 0;
-                } else if (this.pieceRot == 1) {
-                    return 1;
-                } else if (this.pieceRot == 3)
-                    return -1;
-            } else if (this.pieceType == PieceType.O) {
-                return 0;
-            } else if (this.pieceType == PieceType.I) {
-                if (this.pieceRot == 0 || this.pieceRot == 2) {
-                    return 0;
-                } else if (this.pieceRot == 1) {
-                    return 1;
-                } else if (this.pieceRot == 3)
-                    return -1;
+        public void RotatePieceCW() {
+            var result = new int[this.Width, this.Width];
+            for (var x = 0; x < this.Width; x++) {
+                for (var y = 0; y < this.Width; y++) {
+                    var newX = this.Width - (y + 1);
+                    var newY = x;
+                    result[newY, newX] = this.tiles[y, x];
+                }
             }
-            return 0;
+
+            this.tiles = result;
+        }
+
+        private (int leftMax, int rightMax) PieceBias() {
+            if (this.Width == 3) {
+                if (this.PieceRot == 0 || this.PieceRot == 2) {
+                    return (1, Board.Width - 2);
+                } else if (this.PieceRot == 1) {
+                    return (0, Board.Width - 2);
+                } else if (this.PieceRot == 3)
+                    return (1, Board.Width-1);
+            } else if (this.pieceType == PieceType.O) {
+                return (1, Board.Width - 1);
+            } else if (this.pieceType == PieceType.I) {
+                if (this.PieceRot == 0 || this.PieceRot == 2) {
+                    return (2, Board.Width - 2);
+                } else if (this.PieceRot == 1) {
+                    return (0, Board.Width - 1);
+                } else if (this.PieceRot == 3)
+                    return (1, Board.Width );
+            }
+            return (0, Board.Width - 1);
         }
 
         private bool CanMove(int direction) {
-            var halfWidthLeft = (int) Math.Floor(this.Width / 2F);
-            var halfWidthRight = (int) Math.Ceiling(this.Width / 2F);
-            var pieceBias = this.PieceBias();
+            var (leftMax, rightMax) = this.PieceBias();
+            var currPos = this.CurrPos.X;
 
-            if (pieceBias != 0)
-                return this.CurrPos.X + pieceBias * halfWidthRight < Board.Width;
-            if (this.CurrPos.X + halfWidthRight >= Board.Width && direction == 1)
+            if (direction == 1 && currPos >= rightMax)
                 return false;
-            if (this.CurrPos.X - halfWidthLeft < 1 && direction == -1)
+            if (direction == -1 && currPos <= leftMax)
                 return false;
             return true;
         }
@@ -148,10 +152,11 @@ namespace Ctris {
             var renderPos = (this.CurrPos - new Point(this.Width / 2, this.Height / 2)).ToVector2();
             for (var y = 0; y < this.Height; y++) {
                 for (var x = 0; x < this.Width; x++) {
-                    if (this.RotatePiece(this.tiles)[y, x] == 1)
+                    if (this.tiles[y, x] == 1)
                         batch.FillRectangle(renderPos + new Vector2(x, y), new Size2(1, 1), this.color);
                 }
             }
+            Console.WriteLine(this.PieceRot);
         }
 
     }
