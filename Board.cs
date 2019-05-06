@@ -16,7 +16,7 @@ namespace Ctris {
 
         public Board() {
             this.map = new Color[Width, Height];
-            this.currPiece = new Piece(PieceType.O);
+            this.currPiece = new Piece(PieceType.S);
         }
 
 
