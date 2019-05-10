@@ -7,8 +7,8 @@ namespace Ctris {
     public class Piece {
 
         //private int counter;
-        private int[,] tiles;
-        private Color color;
+        public int[,] tiles;
+        public Color Color;
         private PieceType pieceType;
 
         public int PieceRot = 0;
@@ -20,14 +20,16 @@ namespace Ctris {
             this.pieceType = pieceType;
             if (pieceType == PieceType.O) {
                 this.CurrPos = new Point(Board.Width / 2, 0);
-                this.color = Color.Yellow;
+                this.Color = Color.Yellow;
                 this.tiles = new[,] {
-                    {1, 1},
-                    {1, 1}
+                    {0, 0, 0, 0},
+                    {0, 1, 1, 0},
+                    {0, 1, 1, 0},
+                    {0, 0, 0, 0}
                 };
             } else if (pieceType == PieceType.I) {
                 this.CurrPos = new Point(Board.Width / 2, 0);
-                this.color = Color.Aqua;
+                this.Color = Color.Aqua;
                 this.tiles = new[,] {
                     {0, 0, 0, 0},
                     {1, 1, 1, 1},
@@ -36,7 +38,7 @@ namespace Ctris {
                 };
             } else if (pieceType == PieceType.T) {
                 this.CurrPos = new Point(Board.Width / 2 - 1, 0);
-                this.color = Color.Purple;
+                this.Color = Color.Purple;
                 this.tiles = new[,] {
                     {0, 1, 0},
                     {1, 1, 1},
@@ -44,7 +46,7 @@ namespace Ctris {
                 };
             } else if (pieceType == PieceType.J) {
                 this.CurrPos = new Point(Board.Width / 2 - 1, 0);
-                this.color = Color.Blue;
+                this.Color = Color.Blue;
                 this.tiles = new[,] {
                     {1, 0, 0},
                     {1, 1, 1},
@@ -52,7 +54,7 @@ namespace Ctris {
                 };
             } else if (pieceType == PieceType.L) {
                 this.CurrPos = new Point(Board.Width / 2 - 1, 0);
-                this.color = Color.Orange;
+                this.Color = Color.Orange;
                 this.tiles = new[,] {
                     {0, 0, 1},
                     {1, 1, 1},
@@ -60,7 +62,7 @@ namespace Ctris {
                 };
             } else if (pieceType == PieceType.S) {
                 this.CurrPos = new Point(Board.Width / 2 - 1, 0);
-                this.color = Color.Green;
+                this.Color = Color.Green;
                 this.tiles = new[,] {
                     {0, 1, 1},
                     {1, 1, 0},
@@ -68,7 +70,7 @@ namespace Ctris {
                 };
             } else if (pieceType == PieceType.Z) {
                 this.CurrPos = new Point(Board.Width / 2 - 1, 0);
-                this.color = Color.Red;
+                this.Color = Color.Red;
                 this.tiles = new[,] {
                     {1, 1, 0},
                     {0, 1, 1},
@@ -110,7 +112,7 @@ namespace Ctris {
                 } else if (this.PieceRot == 1) {
                     return (0, Board.Width - 2);
                 } else if (this.PieceRot == 3)
-                    return (1, Board.Width-1);
+                    return (1, Board.Width - 1);
             } else if (this.pieceType == PieceType.O) {
                 return (1, Board.Width - 1);
             } else if (this.pieceType == PieceType.I) {
@@ -119,7 +121,7 @@ namespace Ctris {
                 } else if (this.PieceRot == 1) {
                     return (0, Board.Width - 1);
                 } else if (this.PieceRot == 3)
-                    return (1, Board.Width );
+                    return (1, Board.Width);
             }
             return (0, Board.Width - 1);
         }
@@ -144,7 +146,6 @@ namespace Ctris {
             }
             this.CurrPos += offset;
             //counter = 0;                    DEBUG
-            Console.WriteLine(this.CurrPos);
         }
 
 
@@ -153,10 +154,10 @@ namespace Ctris {
             for (var y = 0; y < this.Height; y++) {
                 for (var x = 0; x < this.Width; x++) {
                     if (this.tiles[y, x] == 1)
-                        batch.FillRectangle(renderPos + new Vector2(x, y), new Size2(1, 1), this.color);
+                        batch.FillRectangle(renderPos + new Vector2(x, y), new Size2(1, 1), this.Color);
+                    
                 }
             }
-            Console.WriteLine(this.PieceRot);
         }
 
     }

@@ -39,6 +39,9 @@ namespace Ctris {
                 } else piece.PieceRot = 0;
                 piece.RotatePieceCW();
             }
+            if (key == Keys.Space) {
+                GameImpl.instance.board.PieceToMap();
+            }
         }
 
     }
