@@ -45,6 +45,7 @@ namespace Ctris {
             }
             if (key == Keys.Space) {
                 GameImpl.instance.Board.PieceToMap();
+                
             }
         }
 
