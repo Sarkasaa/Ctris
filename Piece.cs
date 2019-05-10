@@ -79,6 +79,44 @@ namespace Ctris {
             }
         }
 
+
+        public bool CanRotate(int rotation) {
+            var result = new int[this.Width, this.Width];
+            if (rotation == -1) {
+                //CCW
+                for (var x = 0; x < this.Width; x++) {
+                    for (var y = 0; y < this.Width; y++) {
+                        var newX = y;
+                        var newY = this.Width - (x + 1);
+                        result[newY, newX] = this.tiles[y, x];
+                    }
+                }
+            }
+            if (rotation == 1) {
+                //CW
+                for (var x = 0; x < this.Width; x++) {
+                    for (var y = 0; y < this.Width; y++) {
+                        var newX = this.Width - (y + 1);
+                        var newY = x;
+                        result[newY, newX] = this.tiles[y, x];
+                    }
+                }
+            }
+
+            var offset = this.Width == 3 ? new Point(1, 1) : new Point(2, 2);
+            var zeroPos = this.CurrPos - offset;
+            var size = this.Width;
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    if (result[y, x] == 1) {
+                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width)
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         public void RotatePieceCCW() {
             var result = new int[this.Width, this.Width];
             for (var x = 0; x < this.Width; x++) {
@@ -130,9 +168,9 @@ namespace Ctris {
             var (leftMax, rightMax) = this.PieceBias();
             var currPos = this.CurrPos.X;
 
-            if (direction == 1 && currPos >= rightMax)
+            if (direction == 1 && currPos >= rightMax) //check move right
                 return false;
-            if (direction == -1 && currPos <= leftMax)
+            if (direction == -1 && currPos <= leftMax) //check move left
                 return false;
             return true;
         }
@@ -140,8 +178,8 @@ namespace Ctris {
 
         public void Move(Point offset, int direction) {
             if (!this.CanMove(direction)) {
-                /**counter++;                DEBUG
-                Console.WriteLine("move prevented " + counter);**/
+                /*counter++;                DEBUG
+                Console.WriteLine("move prevented " + counter);*/
                 return;
             }
             this.CurrPos += offset;
@@ -155,7 +193,6 @@ namespace Ctris {
                 for (var x = 0; x < this.Width; x++) {
                     if (this.tiles[y, x] == 1)
                         batch.FillRectangle(renderPos + new Vector2(x, y), new Size2(1, 1), this.Color);
-                    
                 }
             }
         }

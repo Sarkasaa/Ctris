@@ -28,19 +28,23 @@ namespace Ctris {
             if (key == Keys.Down)
                 piece.Move(new Point(0, 1), 0);
             if (key == Keys.Q) {
-                if (piece.PieceRot > 0)
-                    piece.PieceRot--;
-                else piece.PieceRot = 3;
-                piece.RotatePieceCCW();
+                if (piece.CanRotate(-1)) {
+                    if (piece.PieceRot > 0)
+                        piece.PieceRot--;
+                    else piece.PieceRot = 3;
+                    piece.RotatePieceCCW();
+                }
             }
             if (key == Keys.E) {
-                if (piece.PieceRot < 3) {
-                    piece.PieceRot++;
-                } else piece.PieceRot = 0;
-                piece.RotatePieceCW();
+                if (piece.CanRotate(1)) {
+                    if (piece.PieceRot < 3)
+                        piece.PieceRot++;
+                    else piece.PieceRot = 0;
+                    piece.RotatePieceCW();
+                }
             }
             if (key == Keys.Space) {
-                GameImpl.instance.board.PieceToMap();
+                GameImpl.instance.Board.PieceToMap();
             }
         }
 
