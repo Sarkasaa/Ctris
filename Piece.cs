@@ -80,9 +80,9 @@ namespace Ctris {
         }
 
 
-        public bool CanRotate(int rotation) {
+        public bool CanRotate(bool clockwise) {
             var result = new int[this.Width, this.Width];
-            if (rotation == -1) {
+            if (!clockwise) {
                 //CCW
                 for (var x = 0; x < this.Width; x++) {
                     for (var y = 0; y < this.Width; y++) {
@@ -91,8 +91,7 @@ namespace Ctris {
                         result[newY, newX] = this.tiles[y, x];
                     }
                 }
-            }
-            if (rotation == 1) {
+            } else {
                 //CW
                 for (var x = 0; x < this.Width; x++) {
                     for (var y = 0; y < this.Width; y++) {
@@ -109,7 +108,7 @@ namespace Ctris {
             for (var y = 0; y < size; y++) {
                 for (var x = 0; x < size; x++) {
                     if (result[y, x] == 1) {
-                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width)
+                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height)
                             return false;
                     }
                 }
@@ -143,47 +142,28 @@ namespace Ctris {
             this.tiles = result;
         }
 
-        private (int leftMax, int rightMax) PieceBias() {
-            if (this.Width == 3) {
-                if (this.PieceRot == 0 || this.PieceRot == 2) {
-                    return (1, Board.Width - 2);
-                } else if (this.PieceRot == 1) {
-                    return (0, Board.Width - 2);
-                } else if (this.PieceRot == 3)
-                    return (1, Board.Width - 1);
-            } else if (this.pieceType == PieceType.O) {
-                return (1, Board.Width - 1);
-            } else if (this.pieceType == PieceType.I) {
-                if (this.PieceRot == 0 || this.PieceRot == 2) {
-                    return (2, Board.Width - 2);
-                } else if (this.PieceRot == 1) {
-                    return (0, Board.Width - 1);
-                } else if (this.PieceRot == 3)
-                    return (1, Board.Width);
+
+        private bool CanMove(Point move) {
+            var offset = this.Width == 3 ? new Point(1, 1) : new Point(2, 2);
+            var zeroPos = this.CurrPos - offset + move;
+            var size = this.Width;
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    if (this.tiles[y, x] == 1) {
+                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height)
+                            return false;
+                    }
+                }
             }
-            return (0, Board.Width - 1);
-        }
-
-        private bool CanMove(int direction) {
-            var (leftMax, rightMax) = this.PieceBias();
-            var currPos = this.CurrPos.X;
-
-            if (direction == 1 && currPos >= rightMax) //check move right
-                return false;
-            if (direction == -1 && currPos <= leftMax) //check move left
-                return false;
             return true;
         }
 
 
-        public void Move(Point offset, int direction) {
-            if (!this.CanMove(direction)) {
-                /*counter++;                DEBUG
-                Console.WriteLine("move prevented " + counter);*/
+        public void Move(Point offset) {
+            if (!this.CanMove(offset)) {
                 return;
             }
             this.CurrPos += offset;
-            //counter = 0;                    DEBUG
         }
 
 

@@ -22,13 +22,13 @@ namespace Ctris {
 
         private static void OnKeyPressed(Keys key, Piece piece) {
             if (key == Keys.Left)
-                piece.Move(new Point(-1, 0), -1);
+                piece.Move(new Point(-1, 0));
             if (key == Keys.Right)
-                piece.Move(new Point(1, 0), 1);
+                piece.Move(new Point(1, 0));
             if (key == Keys.Down)
-                piece.Move(new Point(0, 1), 0);
+                piece.Move(new Point(0, 1));
             if (key == Keys.Q) {
-                if (piece.CanRotate(-1)) {
+                if (piece.CanRotate(false)) {
                     if (piece.PieceRot > 0)
                         piece.PieceRot--;
                     else piece.PieceRot = 3;
@@ -36,7 +36,7 @@ namespace Ctris {
                 }
             }
             if (key == Keys.E) {
-                if (piece.CanRotate(1)) {
+                if (piece.CanRotate(true)) {
                     if (piece.PieceRot < 3)
                         piece.PieceRot++;
                     else piece.PieceRot = 0;
