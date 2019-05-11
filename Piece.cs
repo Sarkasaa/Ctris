@@ -8,7 +8,7 @@ using MonoGame.Extended.Collections;
 namespace Ctris {
     public class Piece {
 
-
+        private Board board;
         public Color Color;
         public int[,] Tiles;
         public int PieceRot = 0;
@@ -17,7 +17,8 @@ namespace Ctris {
         public int Height => this.Tiles.GetLength(0);
         public Point Offset => this.Width == 3 ? new Point(1, 1) : new Point(2, 2);
 
-        public Piece(PieceType pieceType) {
+        public Piece(PieceType pieceType, Board board) {
+            this.board = board;
             if (pieceType == PieceType.O) {
                 this.CurrPos = new Point(Board.Width / 2, 2);
                 this.Color = Color.Yellow;
@@ -28,8 +29,8 @@ namespace Ctris {
                     {0, 0, 0, 0}
                 };
             } else if (pieceType == PieceType.I) {
-                this.CurrPos = new Point(Board.Width / 2, 2);
-                this.Color = Color.Aqua;
+                this.CurrPos = new Point(Board.Width / 2, 3);
+                this.Color = Color.Cyan;
                 this.Tiles = new[,] {
                     {0, 0, 0, 0},
                     {1, 1, 1, 1},
@@ -81,7 +82,6 @@ namespace Ctris {
 
 
         public bool CanRotate(bool clockwise) {
-            var board = GameImpl.instance.Board;
             var result = new int[this.Width, this.Width];
             if (!clockwise) {
                 //CCW
@@ -108,7 +108,7 @@ namespace Ctris {
             for (var y = 0; y < size; y++) {
                 for (var x = 0; x < size; x++) {
                     if (result[y, x] == 1) {
-                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height || board.Map[zeroPos.X + x, zeroPos.Y + y] != Color.Transparent)
+                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height || this.board.Map[zeroPos.X + x, zeroPos.Y + y] != Color.Transparent)
                             return false;
                     }
                 }
@@ -143,17 +143,16 @@ namespace Ctris {
         }
 
 
-        private bool CanMove(Point move) {
+        public bool CanMove(Point move) {
             //var offset = this.Width == 3 ? new Point(1, 1) : new Point(2, 2);
             var zeroPos = this.CurrPos - this.Offset + move;
             var size = this.Width;
-            var board = GameImpl.instance.Board;
             for (var y = 0; y < size; y++) {
                 for (var x = 0; x < size; x++) {
                     if (this.Tiles[y, x] == 1) {
                         var zeroX = zeroPos.X + x;
                         var zeroY = zeroPos.Y + y;
-                        if (zeroX < 0 || zeroX >= Board.Width || zeroY >= Board.Height || board.Map[zeroX, zeroY] != Color.Transparent)
+                        if (zeroX < 0 || zeroX >= Board.Width || zeroY >= Board.Height || this.board.Map[zeroX, zeroY] != Color.Transparent)
                             return false;
                     }
                 }
@@ -175,7 +174,7 @@ namespace Ctris {
             for (var y = 0; y < this.Height; y++) {
                 for (var x = 0; x < this.Width; x++) {
                     if (this.Tiles[y, x] == 1)
-                        batch.FillRectangle(renderPos + new Vector2(x, y - 2), new Size2(1, 1), this.Color);
+                        batch.FillRectangle(renderPos + new Vector2(x, y - 3), new Size2(1, 1), this.Color);
                 }
             }
         }

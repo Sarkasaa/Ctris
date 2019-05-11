@@ -44,8 +44,9 @@ namespace Ctris {
                 }
             }
             if (key == Keys.Space) {
+                while(piece.CanMove(new Point(0,1)))
+                    piece.Move(new Point(0,1));
                 GameImpl.instance.Board.PieceToMap();
-                
             }
         }
 

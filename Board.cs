@@ -22,7 +22,9 @@ namespace Ctris {
 
         public Board() {
             this.Map = new Color[Width, Height];
-            this.CurrPiece = new Piece(this.GetNextPiece());
+            this.CurrPiece = new Piece(this.GetNextPiece(), this);
+            if (this.CurrPiece.CanMove(new Point(0, 1)))
+                this.CurrPiece.Move(new Point(0, 1));
         }
 
 
@@ -50,7 +52,30 @@ namespace Ctris {
                     }
                 }
             }
-            this.CurrPiece = new Piece(this.GetNextPiece());
+            this.ClearLines();
+            this.CurrPiece = new Piece(this.GetNextPiece(), this);
+            if (this.CurrPiece.CanMove(new Point(0, 1)))
+                this.CurrPiece.Move(new Point(0, 1));
+            else {
+                GameImpl.instance.Board = new Board();
+            }
+        }
+
+        public void ClearLines() {
+            for (var y = 0; y < Height; y++) {
+                for (var x = 0; x < Width; x++) {
+                    if (this.Map[x, y] == Color.Transparent)
+                        goto afterXCheck;
+                }
+
+                for (var moveY = y - 1; moveY >= 0; moveY--) {
+                    for (var x = 0; x < Width; x++) {
+                        this.Map[x, moveY + 1] = this.Map[x, moveY];
+                    }
+                }
+
+                afterXCheck: ;
+            }
         }
 
 
@@ -59,9 +84,9 @@ namespace Ctris {
             batch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: matrix);
             this.CurrPiece.Draw(batch);
             for (var x = 0; x < Width; x++) {
-                for (var y = 2; y < Height; y++) {
-                    batch.FillRectangle(new Vector2(x, y-2), new Size2(1, 1), this.Map[x, y]);
-                    batch.DrawRectangle(new Vector2(x, y-2), new Size2(1, 1), Color.Black, 1 / 16F);
+                for (var y = 3; y < Height; y++) {
+                    batch.FillRectangle(new Vector2(x, y - 3), new Size2(1, 1), this.Map[x, y]);
+                    batch.DrawRectangle(new Vector2(x, y - 3), new Size2(1, 1), Color.Black, 1 / 32F);
                 }
             }
             batch.End();
