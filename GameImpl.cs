@@ -29,8 +29,15 @@ namespace Ctris {
             this.Board.Draw(gameTime, this.batch, this.GraphicsDevice.Viewport);
         }
 
+        private double seconds;
+        
         protected override void Update(GameTime gameTime) {
-            InputManager.Update(this.Board.currPiece);
+            InputManager.Update(this.Board.CurrPiece);
+            seconds += gameTime.ElapsedGameTime.TotalSeconds;
+            if (this.seconds >= 1) {
+                this.seconds -= 1;
+                this.Board.CurrPiece.Move(new Point(0,1));
+            }
         }
 
 

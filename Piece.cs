@@ -19,7 +19,7 @@ namespace Ctris {
 
         public Piece(PieceType pieceType) {
             if (pieceType == PieceType.O) {
-                this.CurrPos = new Point(Board.Width / 2, 0);
+                this.CurrPos = new Point(Board.Width / 2, 2);
                 this.Color = Color.Yellow;
                 this.Tiles = new[,] {
                     {0, 0, 0, 0},
@@ -28,7 +28,7 @@ namespace Ctris {
                     {0, 0, 0, 0}
                 };
             } else if (pieceType == PieceType.I) {
-                this.CurrPos = new Point(Board.Width / 2, 0);
+                this.CurrPos = new Point(Board.Width / 2, 2);
                 this.Color = Color.Aqua;
                 this.Tiles = new[,] {
                     {0, 0, 0, 0},
@@ -37,7 +37,7 @@ namespace Ctris {
                     {0, 0, 0, 0}
                 };
             } else if (pieceType == PieceType.T) {
-                this.CurrPos = new Point(Board.Width / 2 - 1, 0);
+                this.CurrPos = new Point(Board.Width / 2 - 1, 2);
                 this.Color = Color.Purple;
                 this.Tiles = new[,] {
                     {0, 1, 0},
@@ -45,7 +45,7 @@ namespace Ctris {
                     {0, 0, 0}
                 };
             } else if (pieceType == PieceType.J) {
-                this.CurrPos = new Point(Board.Width / 2 - 1, 0);
+                this.CurrPos = new Point(Board.Width / 2 - 1, 2);
                 this.Color = Color.Blue;
                 this.Tiles = new[,] {
                     {1, 0, 0},
@@ -53,7 +53,7 @@ namespace Ctris {
                     {0, 0, 0}
                 };
             } else if (pieceType == PieceType.L) {
-                this.CurrPos = new Point(Board.Width / 2 - 1, 0);
+                this.CurrPos = new Point(Board.Width / 2 - 1, 2);
                 this.Color = Color.Orange;
                 this.Tiles = new[,] {
                     {0, 0, 1},
@@ -61,7 +61,7 @@ namespace Ctris {
                     {0, 0, 0}
                 };
             } else if (pieceType == PieceType.S) {
-                this.CurrPos = new Point(Board.Width / 2 - 1, 0);
+                this.CurrPos = new Point(Board.Width / 2 - 1, 2);
                 this.Color = Color.Green;
                 this.Tiles = new[,] {
                     {0, 1, 1},
@@ -69,7 +69,7 @@ namespace Ctris {
                     {0, 0, 0}
                 };
             } else if (pieceType == PieceType.Z) {
-                this.CurrPos = new Point(Board.Width / 2 - 1, 0);
+                this.CurrPos = new Point(Board.Width / 2 - 1, 2);
                 this.Color = Color.Red;
                 this.Tiles = new[,] {
                     {1, 1, 0},
@@ -81,6 +81,7 @@ namespace Ctris {
 
 
         public bool CanRotate(bool clockwise) {
+            var board = GameImpl.instance.Board;
             var result = new int[this.Width, this.Width];
             if (!clockwise) {
                 //CCW
@@ -107,7 +108,7 @@ namespace Ctris {
             for (var y = 0; y < size; y++) {
                 for (var x = 0; x < size; x++) {
                     if (result[y, x] == 1) {
-                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height)
+                        if (zeroPos.X + x < 0 || zeroPos.X + x >= Board.Width || zeroPos.Y + y >= Board.Height || board.Map[zeroPos.X + x, zeroPos.Y + y] != Color.Transparent)
                             return false;
                     }
                 }
@@ -174,7 +175,7 @@ namespace Ctris {
             for (var y = 0; y < this.Height; y++) {
                 for (var x = 0; x < this.Width; x++) {
                     if (this.Tiles[y, x] == 1)
-                        batch.FillRectangle(renderPos + new Vector2(x, y), new Size2(1, 1), this.Color);
+                        batch.FillRectangle(renderPos + new Vector2(x, y - 2), new Size2(1, 1), this.Color);
                 }
             }
         }
