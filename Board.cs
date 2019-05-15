@@ -88,7 +88,7 @@ namespace Ctris {
             this.GhostPiece.Draw(batch);
             for (var x = 0; x < Width; x++) {
                 for (var y = 3; y < Height; y++) {
-                    batch.FillRectangle(new Vector2(x, y - 3), new Size2(1, 1), this.Map[x, y]);
+                    batch.Draw(GameImpl.Tile, new Vector2(x, y - 3), null, this.Map[x,y], 0, Vector2.Zero, 1 / 16F, SpriteEffects.None, 0);
                     batch.DrawRectangle(new Vector2(x, y - 3), new Size2(1, 1), Color.Black, 1 / 32F);
                 }
             }

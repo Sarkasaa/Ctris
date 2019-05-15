@@ -9,6 +9,7 @@ namespace Ctris {
         private SpriteBatch batch;
         public Board Board;
         public static GameImpl instance;
+        public static Texture2D Tile;
 
 
         public GameImpl() {
@@ -17,11 +18,13 @@ namespace Ctris {
                 PreferredBackBufferHeight = 720
             };
             instance = this;
+            this.Content.RootDirectory = "Content";
         }
 
         protected override void LoadContent() {
             this.batch = new SpriteBatch(this.GraphicsDevice);
             this.Board = new Board();
+            Tile = this.Content.Load<Texture2D>("tile");
         }
 
         protected override void Draw(GameTime gameTime) {
