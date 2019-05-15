@@ -33,7 +33,7 @@ namespace Ctris {
         private double seconds;
 
         protected override void Update(GameTime gameTime) {
-            InputManager.Update(this.Board.CurrPiece);
+            InputManager.Update(this.Board);
             seconds += gameTime.ElapsedGameTime.TotalSeconds;
             if (this.seconds >= 1) {
                 this.seconds -= 1;

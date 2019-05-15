@@ -8,7 +8,7 @@ using MonoGame.Extended.Collections;
 namespace Ctris {
     public class Piece {
 
-        private Board board;
+        public Board board;
         public Color Color;
         public int[,] Tiles;
         public int PieceRot = 0;
@@ -80,6 +80,10 @@ namespace Ctris {
             }
         }
 
+
+        public virtual Color GetColor() {
+            return this.Color;
+        }
 
         public bool CanRotate(bool clockwise) {
             var result = new int[this.Width, this.Width];
@@ -171,10 +175,12 @@ namespace Ctris {
 
         public void Draw(SpriteBatch batch) {
             var renderPos = (this.CurrPos - new Point(this.Width / 2, this.Height / 2)).ToVector2();
+            var color = this.GetColor();
             for (var y = 0; y < this.Height; y++) {
                 for (var x = 0; x < this.Width; x++) {
                     if (this.Tiles[y, x] == 1)
-                        batch.FillRectangle(renderPos + new Vector2(x, y - 3), new Size2(1, 1), this.Color);
+
+                        batch.FillRectangle(renderPos + new Vector2(x, y - 3), new Size2(1, 1), color);
                 }
             }
         }
@@ -190,6 +196,26 @@ namespace Ctris {
         J,
         S,
         Z
+
+    }
+
+
+    public class GhostPiece : Piece {
+
+        public GhostPiece(PieceType pieceType, Board board) : base(pieceType, board) {
+        }
+
+        public void PositionGhost() {
+            this.CurrPos = this.board.CurrPiece.CurrPos;
+
+            while (this.CanMove(new Point(0, 1))) {
+                this.Move(new Point(0, 1));
+            }
+        }
+
+        public override Color GetColor() {
+            return base.GetColor() * 0.55F;
+        }
 
     }
 }

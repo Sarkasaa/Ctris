@@ -16,15 +16,14 @@ namespace Ctris {
 
         public Queue<PieceType> queue = new Queue<PieceType>();
         public Piece CurrPiece;
-        private Piece nextPiece;
+        public GhostPiece GhostPiece;
 
         public Color[,] Map;
 
         public Board() {
             this.Map = new Color[Width, Height];
-            this.CurrPiece = new Piece(this.GetNextPiece(), this);
-            if (this.CurrPiece.CanMove(new Point(0, 1)))
-                this.CurrPiece.Move(new Point(0, 1));
+            this.GeneratePieces();
+            this.GhostPiece.PositionGhost();
         }
 
 
@@ -40,6 +39,14 @@ namespace Ctris {
             return this.queue.Dequeue();
         }
 
+        private void GeneratePieces() {
+            var type = this.GetNextPiece();
+            this.CurrPiece = new Piece(type, this);
+            if (this.CurrPiece.CanMove(new Point(0, 1)))
+                this.CurrPiece.Move(new Point(0, 1));
+            else GameImpl.instance.Board = new Board();
+            this.GhostPiece = new GhostPiece(type, this);
+        }
 
         public void PieceToMap() {
             var offset = this.CurrPiece.Width == 3 ? new Point(1, 1) : new Point(2, 2);
@@ -53,12 +60,7 @@ namespace Ctris {
                 }
             }
             this.ClearLines();
-            this.CurrPiece = new Piece(this.GetNextPiece(), this);
-            if (this.CurrPiece.CanMove(new Point(0, 1)))
-                this.CurrPiece.Move(new Point(0, 1));
-            else {
-                GameImpl.instance.Board = new Board();
-            }
+            this.GeneratePieces();
         }
 
         public void ClearLines() {
@@ -83,6 +85,7 @@ namespace Ctris {
             var matrix = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(screen.Width / 2 - Width * Scale / 2, 0, 0);
             batch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: matrix);
             this.CurrPiece.Draw(batch);
+            this.GhostPiece.Draw(batch);
             for (var x = 0; x < Width; x++) {
                 for (var y = 3; y < Height; y++) {
                     batch.FillRectangle(new Vector2(x, y - 3), new Size2(1, 1), this.Map[x, y]);

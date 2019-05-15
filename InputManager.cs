@@ -8,19 +8,20 @@ namespace Ctris {
 
         private static ISet<Keys> lastPressedKeys = new HashSet<Keys>();
 
-        public static void Update(Piece piece) {
+        public static void Update(Board board) {
             var state = Keyboard.GetState();
             var pressed = state.GetPressedKeys();
             foreach (var key in pressed) {
                 if (!lastPressedKeys.Contains(key))
-                    OnKeyPressed(key, piece);
+                    OnKeyPressed(key, board);
             }
             lastPressedKeys.Clear();
             foreach (var key in pressed)
                 lastPressedKeys.Add(key);
         }
 
-        private static void OnKeyPressed(Keys key, Piece piece) {
+        private static void OnKeyPressed(Keys key, Board board) {
+            var piece = board.CurrPiece;
             if (key == Keys.Left)
                 piece.Move(new Point(-1, 0));
             if (key == Keys.Right)
@@ -33,6 +34,7 @@ namespace Ctris {
                         piece.PieceRot--;
                     else piece.PieceRot = 3;
                     piece.RotatePieceCCW();
+                    board.GhostPiece.RotatePieceCCW();
                 }
             }
             if (key == Keys.E) {
@@ -41,6 +43,7 @@ namespace Ctris {
                         piece.PieceRot++;
                     else piece.PieceRot = 0;
                     piece.RotatePieceCW();
+                    board.GhostPiece.RotatePieceCW();
                 }
             }
             if (key == Keys.Space) {
@@ -48,6 +51,7 @@ namespace Ctris {
                     piece.Move(new Point(0,1));
                 GameImpl.instance.Board.PieceToMap();
             }
+            board.GhostPiece.PositionGhost();
         }
 
     }
