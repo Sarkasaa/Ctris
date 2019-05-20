@@ -1,7 +1,5 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Ctris {
     public class GameImpl : Game {
@@ -10,6 +8,7 @@ namespace Ctris {
         public Board Board;
         public static GameImpl instance;
         public static Texture2D Tile;
+        public static bool IsPaused = false;
 
 
         public GameImpl() {
@@ -31,19 +30,21 @@ namespace Ctris {
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
             this.Board.Draw(gameTime, this.batch, this.GraphicsDevice.Viewport);
         }
-        
+
 
         private double seconds;
 
         protected override void Update(GameTime gameTime) {
             InputManager.Update(this.Board);
-            seconds += gameTime.ElapsedGameTime.TotalSeconds;
+            this.seconds += gameTime.ElapsedGameTime.TotalSeconds;
             if (this.seconds >= 1) {
                 this.seconds -= 1;
-                if (!this.Board.CurrPiece.CanMove(new Point(0, 1)))
-                    this.Board.PieceToMap();
-                else
-                    this.Board.CurrPiece.Move(new Point(0, 1));
+                if (!IsPaused) {
+                    if (!this.Board.CurrPiece.CanMove(new Point(0, 1)))
+                        this.Board.PieceToMap();
+                    else
+                        this.Board.CurrPiece.Move(new Point(0, 1));
+                }
             }
         }
 

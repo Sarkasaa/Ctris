@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Collections;
-using MonoGame.Extended.Sprites;
 
 namespace Ctris {
     public class Piece {
@@ -177,11 +172,14 @@ namespace Ctris {
         public void Draw(SpriteBatch batch) {
             var renderPos = (this.CurrPos - new Point(this.Width / 2, this.Height / 2)).ToVector2();
             var color = this.GetColor();
-            for (var y = 0; y < this.Height; y++) {
-                for (var x = 0; x < this.Width; x++) {
-                    if (this.Tiles[y, x] == 1)
-                        batch.Draw(GameImpl.Tile, renderPos + new Vector2(x, y - 3), null, color, 0, Vector2.Zero, 1/16F, SpriteEffects.None, 0);
-                       // batch.FillRectangle(renderPos + new Vector2(x, y - 3), new Size2(1, 1), color);
+            if (!GameImpl.IsPaused) {
+                for (var y = 0; y < this.Height; y++) {
+                    for (var x = 0; x < this.Width; x++) {
+                        if (this.Tiles[y, x] == 1)
+
+                            batch.Draw(GameImpl.Tile, renderPos + new Vector2(x, y - 3), null, color, 0, Vector2.Zero, 1 / 16F, SpriteEffects.None, 0);
+                        // batch.FillRectangle(renderPos + new Vector2(x, y - 3), new Size2(1, 1), color);
+                    }
                 }
             }
         }

@@ -22,34 +22,39 @@ namespace Ctris {
 
         private static void OnKeyPressed(Keys key, Board board) {
             var piece = board.CurrPiece;
-            if (key == Keys.Left)
-                piece.Move(new Point(-1, 0));
-            if (key == Keys.Right)
-                piece.Move(new Point(1, 0));
-            if (key == Keys.Down)
-                piece.Move(new Point(0, 1));
-            if (key == Keys.Q) {
-                if (piece.CanRotate(false)) {
-                    if (piece.PieceRot > 0)
-                        piece.PieceRot--;
-                    else piece.PieceRot = 3;
-                    piece.RotatePieceCCW();
-                    board.GhostPiece.RotatePieceCCW();
+            if (!GameImpl.IsPaused) {
+                if (key == Keys.Left)
+                    piece.Move(new Point(-1, 0));
+                if (key == Keys.Right)
+                    piece.Move(new Point(1, 0));
+                if (key == Keys.Down)
+                    piece.Move(new Point(0, 1));
+                if (key == Keys.Q) {
+                    if (piece.CanRotate(false)) {
+                        if (piece.PieceRot > 0)
+                            piece.PieceRot--;
+                        else piece.PieceRot = 3;
+                        piece.RotatePieceCCW();
+                        board.GhostPiece.RotatePieceCCW();
+                    }
+                }
+                if (key == Keys.E) {
+                    if (piece.CanRotate(true)) {
+                        if (piece.PieceRot < 3)
+                            piece.PieceRot++;
+                        else piece.PieceRot = 0;
+                        piece.RotatePieceCW();
+                        board.GhostPiece.RotatePieceCW();
+                    }
+                }
+                if (key == Keys.Space) {
+                    while (piece.CanMove(new Point(0, 1)))
+                        piece.Move(new Point(0, 1));
+                    GameImpl.instance.Board.PieceToMap();
                 }
             }
-            if (key == Keys.E) {
-                if (piece.CanRotate(true)) {
-                    if (piece.PieceRot < 3)
-                        piece.PieceRot++;
-                    else piece.PieceRot = 0;
-                    piece.RotatePieceCW();
-                    board.GhostPiece.RotatePieceCW();
-                }
-            }
-            if (key == Keys.Space) {
-                while(piece.CanMove(new Point(0,1)))
-                    piece.Move(new Point(0,1));
-                GameImpl.instance.Board.PieceToMap();
+            if (key == Keys.Escape) {
+                GameImpl.IsPaused = !GameImpl.IsPaused;
             }
             board.GhostPiece.PositionGhost();
         }

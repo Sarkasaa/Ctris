@@ -14,7 +14,7 @@ namespace Ctris {
         public const float Scale = 30;
 
 
-        public Queue<PieceType> queue = new Queue<PieceType>();
+        public Queue<PieceType> Queue = new Queue<PieceType>();
         public Piece CurrPiece;
         public GhostPiece GhostPiece;
 
@@ -28,15 +28,15 @@ namespace Ctris {
 
 
         private PieceType GetNextPiece() {
-            if (this.queue.Count == 0) {
+            if (this.Queue.Count == 0) {
                 var bag = new List<PieceType>(Enum.GetValues(typeof(PieceType)).Cast<PieceType>());
                 bag.Shuffle(new Random());
                 foreach (var type in bag) {
-                    this.queue.Enqueue(type);
+                    this.Queue.Enqueue(type);
                 }
             }
 
-            return this.queue.Dequeue();
+            return this.Queue.Dequeue();
         }
 
         private void GeneratePieces() {
@@ -86,9 +86,11 @@ namespace Ctris {
             batch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: matrix);
             this.CurrPiece.Draw(batch);
             this.GhostPiece.Draw(batch);
+            //TODO: Add pause text
             for (var x = 0; x < Width; x++) {
                 for (var y = 3; y < Height; y++) {
-                    batch.Draw(GameImpl.Tile, new Vector2(x, y - 3), null, this.Map[x,y], 0, Vector2.Zero, 1 / 16F, SpriteEffects.None, 0);
+                    if (!GameImpl.IsPaused)
+                        batch.Draw(GameImpl.Tile, new Vector2(x, y - 3), null, this.Map[x, y], 0, Vector2.Zero, 1 / 16F, SpriteEffects.None, 0);
                     batch.DrawRectangle(new Vector2(x, y - 3), new Size2(1, 1), Color.Black, 1 / 32F);
                 }
             }
